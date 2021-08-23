@@ -3,63 +3,105 @@ package aluno.manager;
 import aluno.base.Funcionario;
 import cliente.IRHService;
 
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class RHService implements IRHService {
 
+    private final HashMap<String,Funcionario> funcionariosCpf = new HashMap<>();
+
+    private List<Funcionario> funcionarios;
 
     @Override
     public boolean cadastrar(Funcionario funcionario) {
-        return false;
+        if(!funcionariosCpf.containsKey(funcionario.getCpf())) {
+            funcionariosCpf.put(funcionario.getCpf(), funcionario);
+            return true;
+        } else
+            return false;
     }
 
     @Override
     public boolean remover(String cpf) {
-        return false;
+        if(funcionariosCpf.containsKey(cpf)) {
+            funcionariosCpf.remove(cpf);
+            return true;
+        } else
+            return false;
     }
 
     @Override
     public Funcionario obterFuncionario(String cpf) {
-        return null;
+        return funcionariosCpf.get(cpf);
     }
 
     @Override
     public List<Funcionario> getFuncionarios() {
-        return null;
+        if(funcionariosCpf.isEmpty())
+            return null;
+        funcionarios = new ArrayList<>();
+        funcionariosCpf.forEach((key, value) -> funcionarios.add(value));
+        funcionarios.sort(Comparator.comparing(Funcionario::getNome));
+        return funcionarios;
     }
 
     @Override
     public List<Funcionario> getFuncionariosPorCategoria(Tipo tipo) {
-        return null;
+        if(funcionariosCpf.isEmpty())
+            return null;
+        funcionarios = new ArrayList<>();
+        funcionariosCpf.forEach((key, value) -> {
+            if (value.getTipo() == tipo)
+                funcionarios.add(value);
+        });
+        funcionarios.sort(Comparator.comparing(Funcionario::getNome));
+        return funcionarios;
     }
 
     @Override
     public int getTotalFuncionarios() {
-        return 0;
+        return funcionariosCpf.size();
     }
 
     @Override
     public boolean solicitarDiaria(String cpf) {
-        return false;
+        return funcionariosCpf.get(cpf).setDiarias(funcionariosCpf.get(cpf).getDiarias() + 1);
     }
 
     @Override
     public boolean partilharLucros(double valor) {
-        return false;
+        if(funcionariosCpf.size() == 0)
+            return false;
+        else
+            valor /= funcionariosCpf.size();
+            funcionariosCpf.forEach((key, value) -> value.setParcelaDosLucros(valor));
+            return true;
     }
 
     @Override
     public void iniciarMes() {
-
+        funcionariosCpf.forEach((key, value) -> {
+            value.setParcelaDosLucros(0);
+            value.setDiarias(0);
+        });
     }
 
     @Override
     public Double calcularSalarioDoFuncionario(String cpf) {
-        return null;
+        if(!funcionariosCpf.containsKey(cpf))
+            return null;
+        else
+            return funcionariosCpf.get(cpf).getSalario() + funcionariosCpf.get(cpf).getDiarias() * 100 + funcionariosCpf.get(cpf).getParcelaDosLucros();
     }
 
     @Override
     public double calcularFolhaDePagamento() {
-        return 0;
+        AtomicReference<Double> folha = new AtomicReference<>((double) 0);
+        funcionariosCpf.forEach((key, value) -> {
+            Double salario = calcularSalarioDoFuncionario(key);
+            if(salario != null)
+                folha.updateAndGet(v -> (double) (v + salario));
+        });
+        return folha.get();
     }
 }

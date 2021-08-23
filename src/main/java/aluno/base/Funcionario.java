@@ -1,16 +1,56 @@
 package aluno.base;
 
+import cliente.IRHService.Tipo;
+
 public class Funcionario {
 
+    protected String nome;
+
+    protected String cpf;
+
+    protected double salario;
+
+    protected Tipo tipo;
+
+    protected int diarias;
+
+    protected int diariasMax;
+
+    protected int parcelaDosLucros;
+
+    public boolean setDiarias(int diarias) {
+        if(diarias >= 0 && diarias <= diariasMax) {
+            this.diarias = diarias;
+            return true;
+        } else
+            return false;
+    }
+
+    public void setParcelaDosLucros(int parcelaDosLucros) {
+        this.parcelaDosLucros = parcelaDosLucros;
+    }
+
     public String getNome() {
-        return null;
+        return nome;
     }
 
     public String getCpf() {
-        return null;
+        return cpf;
     }
 
     public double getSalario() {
-        return 0.0;
+        return salario;
+    }
+
+    public Tipo getTipo() {
+        return tipo;
+    }
+
+    public int getDiarias() {
+        return diarias;
+    }
+
+    public int getParcelaDosLucros() {
+        return parcelaDosLucros;
     }
 }
