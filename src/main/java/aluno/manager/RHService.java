@@ -14,7 +14,7 @@ public class RHService implements IRHService {
 
     @Override
     public boolean cadastrar(Funcionario funcionario) {
-        if(!funcionariosCpf.containsKey(funcionario.getCpf())) {
+        if(!funcionariosCpf.containsKey(funcionario.getCpf()) && funcionario.isCadastroValido()) {
             funcionariosCpf.put(funcionario.getCpf(), funcionario);
             return true;
         } else
@@ -72,10 +72,12 @@ public class RHService implements IRHService {
     public boolean partilharLucros(double valor) {
         if(funcionariosCpf.size() == 0)
             return false;
-        else
+        else {
             valor /= funcionariosCpf.size();
-            funcionariosCpf.forEach((key, value) -> value.setParcelaDosLucros(valor));
+            double finalValor = valor;
+            funcionariosCpf.forEach((key, value) -> value.setParcelaDosLucros(finalValor));
             return true;
+        }
     }
 
     @Override

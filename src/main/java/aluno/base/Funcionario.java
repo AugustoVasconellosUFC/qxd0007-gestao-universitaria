@@ -16,7 +16,9 @@ public class Funcionario {
 
     protected int diariasMax;
 
-    protected int parcelaDosLucros;
+    protected double parcelaDosLucros;
+
+    protected boolean cadastroValido = true;
 
     public boolean setDiarias(int diarias) {
         if(diarias >= 0 && diarias <= diariasMax) {
@@ -26,7 +28,7 @@ public class Funcionario {
             return false;
     }
 
-    public void setParcelaDosLucros(int parcelaDosLucros) {
+    public void setParcelaDosLucros(double parcelaDosLucros) {
         this.parcelaDosLucros = parcelaDosLucros;
     }
 
@@ -50,7 +52,11 @@ public class Funcionario {
         return diarias;
     }
 
-    public int getParcelaDosLucros() {
+    public double getParcelaDosLucros() {
         return parcelaDosLucros;
+    }
+
+    public boolean isCadastroValido() {
+        return cadastroValido;
     }
 }
